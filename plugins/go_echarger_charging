@@ -43,7 +43,7 @@ get_status() {
 }
 
 energy_format() {
-	printf "%.1f" $(echo "$1 / 10" | bc)
+	printf "%.1f" "$1"
 }
 
 get_current_charge() {
