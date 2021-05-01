@@ -69,6 +69,7 @@ case $1 in
         cat <<EOF
 graph_title go-eCharger Power
 graph_vlabel kW
+graph_args --lower-limit 0
 graph_info go-eCharger Power
 graph_category go_eCharger
 graph_printf %0.1lf

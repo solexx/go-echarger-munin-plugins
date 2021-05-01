@@ -61,6 +61,7 @@ case $1 in
 	config)
         cat <<EOF
 graph_title go-eCharger Charging Progress
+graph_args --lower-limit 0
 graph_vlabel kWh
 graph_info go-eCharger Charging Progress
 graph_category go_eCharger

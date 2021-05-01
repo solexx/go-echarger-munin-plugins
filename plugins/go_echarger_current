@@ -76,6 +76,7 @@ case $1 in
 	config)
         cat <<EOF
 graph_title go-eCharger Currents
+graph_args --lower-limit 0
 graph_vlabel Ampere
 graph_info go-eCharger Currents
 graph_category go_eCharger
