@@ -11,10 +11,13 @@ any problems with that yet.
 
 ### Plugins
 
+- **go_echarger_charging** Displays state of current charge and a
+  possibly configured limit.
 - **go_echarger_current** Displays currents (in Ampere) of all three
   lines, the current supported by an attached cable, the configured
   limit (may be changed by pressing the button on the device)  as well
   as the absolute maximum current supported by the charger.
+- **go_echarger_efficiency** Display efficiency factor per line.
 - **go_echarger_energy** Displays the total energy output (in kWh) by
   the device as well as per individual RFID token slot.
 - **go_echarger_power** Displays the current power output (in kW) per
