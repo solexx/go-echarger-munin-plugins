@@ -68,6 +68,10 @@ get_max_configured_current() {
 	get_status | jq ".ama | tonumber"
 }
 
+get_adapter_status() {
+	get_status | jq ".adi | tonumber"
+}
+
 case $1 in
 	config)
         cat <<EOF
@@ -82,6 +86,7 @@ EOF
 		echo "line1.label Line 1"
 		echo "line2.label Line 2"
 		echo "line3.label Line 3"
+		echo "adapter.label Adapter Limit"
 		echo "cable.label Cable Limit"
 		echo "level.label Selected Level"
 		echo "maximum.label Absolute Maximum"
@@ -101,6 +106,13 @@ esac
 echo "line1.value $(get_line_current 1)"
 echo "line2.value $(get_line_current 2)"
 echo "line3.value $(get_line_current 3)"
+
+if [ "$(get_adapter_status)" -eq 1 ]; then
+	echo "adapter.value 16"
+else
+	echo "adapter.value 0"
+fi
+
 echo "cable.value $(get_cable_current)"
 echo "level.value $(get_current_level)"
 echo "maximum.value $(get_max_configured_current)"
