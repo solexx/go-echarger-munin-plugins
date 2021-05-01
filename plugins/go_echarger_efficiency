@@ -1,0 +1,88 @@
+#!/bin/bash
+# -*- bash -*-
+
+#set -x
+#set -u
+
+: << =cut
+
+=head1 NAME
+
+go_echarger_current - Plugin to monitor line efficiency
+
+=head1 CONFIGURATION
+
+You just need to set the host like this:
+
+ [go-echarger-*]
+ env.host go-echarger.home.well-adjusted.de
+
+=head1 AUTHORS
+
+=over
+
+=item 2021.05.01 Initial version by Jochen Spieker <js@wim.re>
+
+=back
+
+=head1 LICENSE
+
+GPLv2
+
+=head1 MAGIC MARKERS
+
+ #%# family=auto
+ #%# capabilities=autoconf
+
+=cut
+
+host=${host:-go-echarger}
+
+get_status() {
+	curl -s http://${host}/mqtt
+}
+
+get_line_efficiency() {
+	# $1 must be 1, 2, 3
+	line=$1
+	if [ "${line}" -lt 1 ] || [ "${line}" -gt 3 ]; then
+		exit
+	fi
+	idx=$(echo "$line + 11" | bc)
+	get_status | jq ".nrg[${idx}] | tonumber"
+}
+
+case $1 in
+	config)
+        cat <<EOF
+graph_title go-eCharger Efficiency
+graph_args --upper-limit 100 -l 0
+graph_vlabel %
+graph_scale no
+graph_info go-eCharger Efficiency per Line
+graph_category go_eCharger
+graph_printf %0.0lf
+graph_data_size custom 7d, 30m for 30d, 2h for 365d, 1d for 3650d
+EOF
+
+		echo "line1.label Line 1"
+		echo "line2.label Line 2"
+		echo "line3.label Line 3"
+
+        exit 0
+		;;
+	autoconf)
+		if echo "" | nc -q1 "$host" "80" > /dev/null 2>&1 ; then
+			echo "yes"
+		else
+			echo "no (Connection to ${host}:80 failed.)"
+		fi
+		exit 0
+		;;
+esac 
+
+echo "line1.value $(get_line_efficiency 1)"
+echo "line2.value $(get_line_efficiency 2)"
+echo "line3.value $(get_line_efficiency 3)"
+
+exit 0
