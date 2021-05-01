@@ -1,0 +1,110 @@
+#!/bin/bash
+# -*- bash -*-
+
+#set -x
+#set -u
+
+: << =cut
+
+=head1 NAME
+
+go_echarger_energy - Plugin to monitor energy usage by RFID token
+
+=head1 CONFIGURATION
+
+You just need to set the host like this:
+
+ [go-echarger-*]
+ env.host go-echarger.home.well-adjusted.de
+
+=head1 AUTHORS
+
+=over
+
+=item 2021.04.30 Initial version by Jochen Spieker <js@wim.re>
+
+=back
+
+=head1 LICENSE
+
+GPLv2
+
+=head1 MAGIC MARKERS
+
+ #%# family=auto
+ #%# capabilities=autoconf
+
+=cut
+
+host=${host:-go-echarger}
+# identifiers for tokens
+tokens="a r d 4 5 6 7 8 9 1"
+# labels use different idenfitiers for some reason!
+# token_labels="a m e 4 5 6 7 8 9 1"
+
+get_status() {
+	curl -s http://${host}/mqtt
+}
+
+energy_format() {
+	printf "%.1f" $(echo "$1 / 10" | bc)
+}
+
+get_total_energy() {
+	energy_format $(get_status | jq ".eto | tonumber")
+}
+
+get_label_for_token() {
+	# I know this is stupid, but the labels use differend IDs for r and d …
+	case $1 in
+		r)
+			t=m
+		;;
+		d)
+			t=e
+		;;
+		*)
+			t=$1
+	esac
+	get_status | jq ".rn${t}" | sed -e 's#"##g' -e 's#^$#unknown#'
+}
+
+get_energy_for_token() {
+	energy_format $(get_status | jq ".ec${1} | tonumber")
+}
+
+case $1 in
+	config)
+        cat <<EOF
+graph_title go-eCharger Energy Usage
+graph_vlabel kWh
+graph_info go-eCharger Energy Usage by RFID token
+graph_category go_eCharger
+graph_printf %0.1lf
+graph_data_size custom 7d, 30m for 30d, 2h for 365d, 1d for 3650d
+EOF
+
+		echo "total_energy.label Total"
+		for t in ${tokens}; do
+			echo "token_${t}.label $(get_label_for_token $t)"
+			echo "token_${t}.draw AREA"
+		done
+
+        exit 0
+		;;
+	autoconf)
+		if echo "" | nc -q1 "$host" "80" > /dev/null 2>&1 ; then
+			echo "yes"
+		else
+			echo "no (Connection to ${host}:80 failed.)"
+		fi
+		exit 0
+		;;
+esac 
+
+echo "total_energy.value $(get_total_energy)"
+for t in ${tokens}; do
+	echo "token_${t}.value $(get_energy_for_token $t)"
+done
+
+exit 0

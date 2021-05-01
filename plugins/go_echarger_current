@@ -1,0 +1,107 @@
+#!/bin/bash
+# -*- bash -*-
+
+#set -x
+#set -u
+
+: << =cut
+
+=head1 NAME
+
+go_echarger_current - Plugin to monitor energy currents
+
+=head1 CONFIGURATION
+
+You just need to set the host like this:
+
+ [go-echarger-*]
+ env.host go-echarger.home.well-adjusted.de
+
+=head1 AUTHORS
+
+=over
+
+=item 2021.04.30 Initial version by Jochen Spieker <js@wim.re>
+
+=back
+
+=head1 LICENSE
+
+GPLv2
+
+=head1 MAGIC MARKERS
+
+ #%# family=auto
+ #%# capabilities=autoconf
+
+=cut
+
+host=${host:-go-echarger}
+
+get_status() {
+	curl -s http://${host}/mqtt
+}
+
+get_cable_current() {
+	get_status | jq ".cbl | tonumber"
+}
+
+current_format() {
+	printf "%.1f" $(echo "$1 / 10" | bc)
+}
+
+get_line_current() {
+	# $1 must be 1, 2, 3
+	line=$1
+	if [ "${line}" -lt 1 ] || [ "${line}" -gt 3 ]; then
+		exit
+	fi
+	idx=$(echo "$line + 3" | bc)
+	current_format $(get_status | jq ".nrg[${idx}]")
+}
+
+get_max_configured_current() {
+	get_status | jq ".ama | tonumber"
+}
+
+case $1 in
+	config)
+        cat <<EOF
+graph_title go-eCharger Currents
+graph_vlabel Ampere
+graph_info go-eCharger Currents
+graph_category go_eCharger
+graph_printf %0.1lf
+graph_data_size custom 7d, 30m for 30d, 2h for 365d, 1d for 3650d
+EOF
+
+		echo "cable.label Cable"
+		echo "line1.label Line 1"
+		echo "line1.draw AREA"
+		echo "line2.label Line 2"
+		echo "line2.draw AREA"
+		echo "line3.label Line 3"
+		echo "line3.draw AREA"
+		echo "line_total.label Total Lines"
+		echo "maximum.label Maximum"
+
+        exit 0
+		;;
+	autoconf)
+		if echo "" | nc -q1 "$host" "80" > /dev/null 2>&1 ; then
+			echo "yes"
+		else
+			echo "no (Connection to ${host}:80 failed.)"
+		fi
+		exit 0
+		;;
+esac 
+
+echo "cable.value $(get_cable_current)"
+echo "line1.value $(get_line_current 1)"
+echo "line2.value $(get_line_current 2)"
+echo "line3.value $(get_line_current 3)"
+echo "line_total.value $(echo $(get_line_current 1) + $(get_line_current 2) + $(get_line_current 3) | bc)"
+echo "maximum.value $(get_max_configured_current)"
+
+exit 0
