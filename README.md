@@ -26,7 +26,7 @@ Just drop the plugins into `/etc/munin/plugins` and restart `munin-node`.
 
 Unless your go-eCharger can be reached with the hostname
 `go-echarger` you need to add this somewhere in
-`/etc/munin/plugin-conf.d/`:
+`/etc/munin/plugin-conf.d/` with the proper hostname or IP address:
 
 ```
 [go-echarger-*]
