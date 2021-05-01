@@ -1,0 +1,89 @@
+#!/bin/bash
+# -*- bash -*-
+
+#set -x
+#set -u
+
+: << =cut
+
+=head1 NAME
+
+go_echarger_energy - Plugin to monitor charge progress
+
+=head1 CONFIGURATION
+
+You just need to set the host like this:
+
+ [go-echarger-*]
+ env.host go-echarger.home.well-adjusted.de
+
+=head1 AUTHORS
+
+=over
+
+=item 2021.05.01 Initial version by Jochen Spieker <js@wim.re>
+
+=back
+
+=head1 LICENSE
+
+GPLv2
+
+=head1 MAGIC MARKERS
+
+ #%# family=auto
+ #%# capabilities=autoconf
+
+=cut
+
+host=${host:-go-echarger}
+
+get_status() {
+	curl -s http://${host}/mqtt
+}
+
+energy_format() {
+	printf "%.1f" $(echo "$1 / 10" | bc)
+}
+
+get_current_charge() {
+	dws=$(get_status | jq ".dws | tonumber")
+	energy_format $(echo "${dws} / 3600 / 1000" | bc)
+}
+
+get_charge_limit() {
+	dwo=$(get_status | jq ".dwo | tonumber")
+	energy_format $(echo "${dwo} / 10"  | bc)
+}
+
+
+case $1 in
+	config)
+        cat <<EOF
+graph_title go-eCharger Charging Progress
+graph_vlabel kWh
+graph_info go-eCharger Charging Progress
+graph_category go_eCharger
+graph_printf %0.1lf
+graph_data_size custom 7d, 30m for 30d, 2h for 365d, 1d for 3650d
+EOF
+
+		echo "current_charge.label Current Charge"
+		echo "charge_limit.label Charge Limit"
+
+        exit 0
+		;;
+	autoconf)
+		if echo "" | nc -q1 "$host" "80" > /dev/null 2>&1 ; then
+			echo "yes"
+		else
+			echo "no (Connection to ${host}:80 failed.)"
+		fi
+		exit 0
+		;;
+esac 
+
+echo "current_charge.value $(get_current_charge)"
+echo "charge_limit.value $(get_charge_limit)"
+
+exit 0
