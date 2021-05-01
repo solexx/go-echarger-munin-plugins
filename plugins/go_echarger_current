@@ -60,6 +60,10 @@ get_line_current() {
 	current_format $(get_status | jq ".nrg[${idx}]")
 }
 
+get_current_level() {
+	get_status | jq ".amp | tonumber"
+}
+
 get_max_configured_current() {
 	get_status | jq ".ama | tonumber"
 }
@@ -75,15 +79,12 @@ graph_printf %0.1lf
 graph_data_size custom 7d, 30m for 30d, 2h for 365d, 1d for 3650d
 EOF
 
-		echo "cable.label Cable"
 		echo "line1.label Line 1"
-		echo "line1.draw AREA"
 		echo "line2.label Line 2"
-		echo "line2.draw AREA"
 		echo "line3.label Line 3"
-		echo "line3.draw AREA"
-		echo "line_total.label Total Lines"
-		echo "maximum.label Maximum"
+		echo "cable.label Cable Limit"
+		echo "level.label Selected Level"
+		echo "maximum.label Absolute Maximum"
 
         exit 0
 		;;
@@ -97,11 +98,11 @@ EOF
 		;;
 esac 
 
-echo "cable.value $(get_cable_current)"
 echo "line1.value $(get_line_current 1)"
 echo "line2.value $(get_line_current 2)"
 echo "line3.value $(get_line_current 3)"
-echo "line_total.value $(echo $(get_line_current 1) + $(get_line_current 2) + $(get_line_current 3) | bc)"
+echo "cable.value $(get_cable_current)"
+echo "level.value $(get_current_level)"
 echo "maximum.value $(get_max_configured_current)"
 
 exit 0
