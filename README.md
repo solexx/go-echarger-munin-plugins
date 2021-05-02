@@ -22,6 +22,8 @@ any problems with that yet.
   the device as well as per individual RFID token slot.
 - **go_echarger_power** Displays the current power output (in kW) per
   line and in total.
+- **go_echarger_state** Displays various status fields that the device
+  reports
 
 ### Setup
 
