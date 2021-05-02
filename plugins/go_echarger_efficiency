@@ -43,9 +43,9 @@ get_status() {
 }
 
 get_line_efficiency() {
-	# $1 must be 1, 2, 3
+	# $1 must be 1, 2, 3, 4 (4=neutral)
 	line=$1
-	if [ "${line}" -lt 1 ] || [ "${line}" -gt 3 ]; then
+	if [ "${line}" -lt 1 ] || [ "${line}" -gt 4 ]; then
 		exit
 	fi
 	idx=$(echo "$line + 11" | bc)
@@ -68,6 +68,7 @@ EOF
 		echo "line1.label Line 1"
 		echo "line2.label Line 2"
 		echo "line3.label Line 3"
+		echo "neutral.label Neutral"
 
         exit 0
 		;;
@@ -84,5 +85,6 @@ esac
 echo "line1.value $(get_line_efficiency 1)"
 echo "line2.value $(get_line_efficiency 2)"
 echo "line3.value $(get_line_efficiency 3)"
+echo "neutral.value $(get_line_efficiency 4)"
 
 exit 0

@@ -47,7 +47,7 @@ get_status() {
 }
 
 energy_format() {
-	printf "%.1f" $(echo "$1 / 10" | bc)
+	printf "%.1f" $(echo "$1 / 10" | bc -l)
 }
 
 get_total_energy() {

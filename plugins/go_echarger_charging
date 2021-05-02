@@ -42,18 +42,18 @@ get_status() {
 	curl -s http://${host}/mqtt
 }
 
-energy_format() {
+current_format() {
 	printf "%.1f" "$1"
 }
 
 get_current_charge() {
 	dws=$(get_status | jq ".dws | tonumber")
-	energy_format $(echo "${dws} / 3600 / 1000" | bc)
+	current_format $(echo "${dws} / 3600 / 100" | bc -l)
 }
 
 get_charge_limit() {
 	dwo=$(get_status | jq ".dwo | tonumber")
-	energy_format $(echo "${dwo} / 10"  | bc)
+	current_format $(echo "${dwo} / 10"  | bc -l)
 }
 
 

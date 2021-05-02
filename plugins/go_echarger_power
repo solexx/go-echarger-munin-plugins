@@ -43,17 +43,17 @@ get_status() {
 }
 
 power_format() {
-	printf "%.1f" $(echo "$1 / 10" | bc)
+	printf "%.1f" $(echo "$1 / 10" | bc -l)
 }
 
 total_power_format() {
-	printf "%.1f" $(echo "$1 / 100" | bc)
+	printf "%.1f" $(echo "$1 / 100" | bc -l)
 }
 
 get_line_power() {
 	# $1 must be 1, 2, 3
 	line=$1
-	if [ "${line}" -lt 1 ] || [ "${line}" -gt 3 ]; then
+	if [ "${line}" -lt 1 ] || [ "${line}" -gt 4 ]; then
 		exit
 	fi
 	idx=$(echo "$line + 6" | bc)
@@ -82,6 +82,7 @@ EOF
 		echo "line2.draw AREA"
 		echo "line3.label Line 3"
 		echo "line3.draw AREA"
+		echo "neutral.label Neutral"
 		echo "line_total.label Total"
 
         exit 0
@@ -99,6 +100,7 @@ esac
 echo "line1.value $(get_line_power 1)"
 echo "line2.value $(get_line_power 2)"
 echo "line3.value $(get_line_power 3)"
+echo "neutral.value $(get_line_power 4)"
 echo "line_total.value $(get_total_power)"
 
 exit 0
