@@ -51,7 +51,7 @@ https://jigsaw.home.well-adjusted.de/munin/go_echarger-week.html
 
 ### TODO
 
-- [ ] Add TODOs ;-)
+- [ ] Make only one API request per plugin execution
 
 ### Contact
 
