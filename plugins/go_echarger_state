@@ -52,20 +52,20 @@ case $1 in
         cat <<EOF
 graph_title go-eCharger State
 graph_args --lower-limit 0
-graph_info go-eCharger States<br /> \
-<em>car</em> 1=ready, no car; 2=Charging; 3=Waiting for car; 4=Charging finished, car still connected <br /> \
-<em>err</em> 1=RCCB; 3=PHASE; 8: NO_GROUND; 10=INTERNAL<br /> \
-<em>ast</em> 0=Open; 1=Locked; 2=Automatic <br /> \
-<em>alw</em> 0=Charging not allowed; 1=Charging allowed <br /> \
-<em>adi</em> 0=No adapter; 1=16A adapter presend <br /> \
-<em>wst</em> 3=Wifi connected <br /> \
-<em>wen</em> 0=Wifi disabled; 1=Wifi enabled <br /> \
-<em>lse</em> 0=LED energy saving disabled; 1=LED energy saving enabled <br /> \
-<em>ust</em> 0=Cable locked while connected; 1=Unlock after charging; 2=Always locked <br /> \
-<em>nmo</em> 0=Norway mode disabled; 1=Norway mode enabled (grounding detection disabled)<br /> \
-<em>loe</em> 0=Capacity management disabled; 1=Capacity management enabled <br /> \
-<em>mce</em> 0=Custom MQTT server disabled; 1=Custom MQTT server enabled <br /> \
-<em>mcc</em> 0=Custom MQTT server not connected; 1=Custom MQTT server connected <br />
+graph_info <b>go-eCharger States</b><br /> \
+<em>Charging State     </em> 1=ready, no car; 2=Charging; 3=Waiting for car; 4=Charging finished, car still connected <br /> \
+<em>Error              </em> 1=RCCB; 3=PHASE; 8: NO_GROUND; 10=INTERNAL<br /> \
+<em>Access Control     </em> 0=Open; 1=Locked; 2=Automatic <br /> \
+<em>Charging Allowed   </em> 0=Charging not allowed; 1=Charging allowed <br /> \
+<em>16A Adapter Present</em> 0=No adapter; 1=16A adapter presend <br /> \
+<em>Wifi Connected     </em> 3=Wifi connected <br /> \
+<em>Wifi Enabled       </em> 0=Wifi disabled; 1=Wifi enabled <br /> \
+<em>LED Energy Saving  </em> 0=LED energy saving disabled; 1=LED energy saving enabled <br /> \
+<em>Cable Lock Policy  </em> 0=Cable locked while connected; 1=Unlock after charging; 2=Always locked <br /> \
+<em>Norway Mode        </em> 0=Norway mode disabled; 1=Norway mode enabled (grounding detection disabled)<br /> \
+<em>Capacity Management</em> 0=Capacity management disabled; 1=Capacity management enabled <br /> \
+<em>MQTT Enabled       </em> 0=Custom MQTT server disabled; 1=Custom MQTT server enabled <br /> \
+<em>MQTT Connected     </em> 0=Custom MQTT server not connected; 1=Custom MQTT server connected <br />
 graph_category go_eCharger
 graph_printf %0.1lf
 graph_data_size custom 7d, 30m for 30d, 2h for 365d, 1d for 3650d
