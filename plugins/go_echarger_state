@@ -71,9 +71,19 @@ graph_printf %0.1lf
 graph_data_size custom 7d, 30m for 30d, 2h for 365d, 1d for 3650d
 EOF
 
-		for state in car err ast alw adi wst wen lse ust nmo loe mce mcc; do
-			echo "${state}.label ${state}"
-		done
+		echo "car.label Charging State"
+		echo "err.label Error"
+		echo "ast.label Access Control"
+		echo "alw.label Charging Allowed"
+		echo "adi.label 16A Adapter Present"
+		echo "wst.label Wifi Connected"
+		echo "wen.label Wifi Enabled"
+		echo "lse.label LED Energy Saving"
+		echo "ust.label Cable Lock Policy"
+		echo "nmo.label Norway Mode"
+		echo "loe.label Capacity Management"
+		echo "mce.label MQTT Enabled"
+		echo "mcc.label MQTT Connected"
 
         exit 0
 		;;
