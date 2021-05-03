@@ -1,10 +1,10 @@
 ### Background
 
 These are [Munin](http://munin-monitoring.org/) plugins for monitoring
-[go-eChargers](https://go-e.co/) for electric vehicles. They are using
-the device's local API. That means the device needs to be accessible
-from the LAN.  Authentication against go-e's cloud service is not
-supported.
+[go-eChargers](https://go-e.co/) for electric vehicles. They are using the
+device's local [API](https://github.com/goecharger/go-eCharger-API-v1). That
+means the device needs to be accessible from the LAN.  Authentication against
+go-e's cloud service is not supported.
 
 The plugins make a lot of requests to the device, but I haven't noticed
 any problems with that yet.
