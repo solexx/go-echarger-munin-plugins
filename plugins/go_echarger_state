@@ -68,6 +68,7 @@ EOF
 		echo "car.label Charging State"
 		echo "err.info 1=RCCB; 3=PHASE; 8: NO_GROUND; 10=INTERNAL"
 		echo "err.label Error"
+		echo "err.critical 1"
 		echo "loe.info 0=Capacity management disabled; 1=Capacity management enabled"
 		echo "loe.label Capacity Management"
 		echo "lse.info 0=LED energy saving disabled; 1=LED energy saving enabled"
