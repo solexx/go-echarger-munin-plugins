@@ -70,6 +70,7 @@ graph_data_size custom 7d, 30m for 30d, 2h for 365d, 1d for 3650d
 EOF
 
 		echo "current_charge.label Current Charge"
+		echo "current_charge.draw AREA"
 		echo "charge_limit.label Charge Limit"
 
         exit 0

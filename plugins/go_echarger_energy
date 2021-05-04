@@ -77,6 +77,7 @@ case $1 in
 	config)
         cat <<EOF
 graph_title go-eCharger Energy Usage
+graph_args --lower-limit 0
 graph_vlabel kWh
 graph_info go-eCharger Energy Usage by RFID token
 graph_category go_eCharger
@@ -85,9 +86,12 @@ graph_data_size custom 7d, 30m for 30d, 2h for 365d, 1d for 3650d
 EOF
 
 		echo "total_energy.label Total"
+		# We use an empty, invisible base here to make stacking easy
+		echo "base.label void"
+		echo "base.graph no"
 		for t in ${tokens}; do
 			echo "token_${t}.label $(get_label_for_token $t)"
-			echo "token_${t}.draw AREA"
+			echo "token_${t}.draw AREASTACK"
 		done
 
         exit 0
@@ -103,6 +107,7 @@ EOF
 esac 
 
 echo "total_energy.value $(get_total_energy)"
+echo "base.value 0"
 for t in ${tokens}; do
 	echo "token_${t}.value $(get_energy_for_token $t)"
 done
