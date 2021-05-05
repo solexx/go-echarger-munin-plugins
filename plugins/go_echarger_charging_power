@@ -1,0 +1,85 @@
+#!/bin/bash
+# -*- bash -*-
+
+#set -x
+#set -u
+
+: << =cut
+
+=head1 NAME
+
+go_echarger_energy - Plugin to monitor charging power
+
+=head1 CONFIGURATION
+
+You just need to set the host like this:
+
+ [go-echarger-*]
+ env.host go-echarger.home.well-adjusted.de
+
+=head1 AUTHORS
+
+=over
+
+=item 2021.05.01 Initial version by Jochen Spieker <js@wim.re>
+
+=back
+
+=head1 LICENSE
+
+GPLv2
+
+=head1 MAGIC MARKERS
+
+ #%# family=auto
+ #%# capabilities=autoconf
+
+=cut
+
+host=${host:-go-echarger}
+
+get_status() {
+	curl -s http://${host}/mqtt
+}
+
+current_format() {
+	printf "%.1f" "$1"
+}
+
+get_current_charge() {
+	dws=$(get_status | jq ".dws | tonumber")
+	current_format $(echo "${dws} / 3600 / 100" | bc -l)
+}
+
+
+case $1 in
+	config)
+        cat <<EOF
+graph_title go-eCharger Charging Power
+graph_args --lower-limit 0
+graph_vlabel kW
+graph_info go-eCharger Charging Power
+graph_category go_eCharger
+graph_printf %0.1lf
+graph_data_size custom 7d, 30m for 30d, 2h for 365d, 1d for 3650d
+EOF
+
+		echo "current_charge.label Charging power"
+		echo "current_charge.type DERIVE"
+		echo "current_charge.min 0"
+
+        exit 0
+		;;
+	autoconf)
+		if echo "" | nc -q1 "$host" "80" > /dev/null 2>&1 ; then
+			echo "yes"
+		else
+			echo "no (Connection to ${host}:80 failed.)"
+		fi
+		exit 0
+		;;
+esac 
+
+echo "current_charge.value $(get_current_charge)"
+
+exit 0
