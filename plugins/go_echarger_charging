@@ -8,7 +8,7 @@
 
 =head1 NAME
 
-go_echarger_energy - Plugin to monitor charge progress
+go_echarger_energy - Plugin to monitor charging progress
 
 =head1 CONFIGURATION
 
@@ -16,6 +16,12 @@ You just need to set the host like this:
 
  [go-echarger-*]
  env.host go-echarger.home.well-adjusted.de
+
+You can also optionally set your EV's battery capacity in kWh to have it
+displayed as a constant in the graph:
+
+ [go-echarger-*]
+ env.capacity 28
 
 =head1 AUTHORS
 
@@ -37,6 +43,7 @@ GPLv2
 =cut
 
 host=${host:-go-echarger}
+capacity=${capacity:-unset}
 
 get_status() {
 	curl -s http://${host}/mqtt
@@ -73,6 +80,11 @@ EOF
 		echo "current_charge.draw AREA"
 		echo "charge_limit.label Charge Limit"
 
+		if [[ -n "${capacity}" && "${capacity}" =~ ^[0-9]+$ ]]; then
+			echo "capacity.label Battery capacity"
+		fi
+
+
         exit 0
 		;;
 	autoconf)
@@ -89,5 +101,8 @@ esac
 
 echo "current_charge.value $(get_current_charge)"
 echo "charge_limit.value $(get_charge_limit)"
+if [[ -n "${capacity}" && "${capacity}" =~ ^[0-9]+$ ]]; then
+	echo "capacity.value ${capacity}"
+fi
 
 exit 0

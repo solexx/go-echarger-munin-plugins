@@ -11,19 +11,19 @@ any problems with that yet.
 
 ### Plugins
 
-- **go_echarger_charging** Displays state of current charge and a
-  possibly configured limit.
-- **go_echarger_current** Displays currents (in Ampere) of all three
-  lines, the current supported by an attached cable, the configured
-  limit (may be changed by pressing the button on the device)  as well
-  as the absolute maximum current supported by the charger.
+- **go_echarger_charging** Displays state of current charge, a possibly
+  configured limit and optionally your battery's capacity (see the Setup
+  section below).
+- **go_echarger_current** Displays currents (in Ampere) of all three lines, the
+  current supported by an attached cable, the configured limit (may be changed
+  by pressing the button on the device)  as well as the absolute maximum
+  current supported by the charger.
 - **go_echarger_efficiency** Display efficiency factor per line.
-- **go_echarger_energy** Displays the total energy output (in kWh) by
-  the device as well as per individual RFID token slot.
-- **go_echarger_power** Displays the current power output (in kW) per
-  line and in total.
-- **go_echarger_state** Displays various status fields that the device
-  reports
+- **go_echarger_energy** Displays the total energy output (in kWh) by the
+  device as well as per individual RFID token slot.
+- **go_echarger_power** Displays the current power output (in kW) per line and
+  in total.
+- **go_echarger_state** Displays various status fields that the device reports
 
 ### Setup
 
@@ -37,6 +37,15 @@ Unless your go-eCharger can be reached with the hostname
 [go-echarger-*]
 env.host go-echarger.home.well-adjusted.de
 ```
+
+You can also optionally set your EV's battery capacity in kWh to have it
+displayed as a constant in the charging graph:
+
+```
+[go-echarger-*]
+env.capacity 28
+```
+
 
 None of the plugins need any special privileges. There is no need to run
 them as root.
@@ -52,7 +61,7 @@ https://jigsaw.home.well-adjusted.de/munin/go_echarger-week.html
 ### TODO
 
 - [ ] Make only one API request per plugin execution
-- [ ] Add configuration for battery capacity to display in the charging
+- [X] Add configuration for battery capacity to display in the charging
   plugin
 
 ### Contact
