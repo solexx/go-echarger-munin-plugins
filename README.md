@@ -60,7 +60,7 @@ https://jigsaw.home.well-adjusted.de/munin/go_echarger-week.html
 
 ### TODO
 
-- [ ] Make only one API request per plugin execution
+- [X] Make only one API request per plugin execution
 - [X] Add configuration for battery capacity to display in the charging
   plugin
 

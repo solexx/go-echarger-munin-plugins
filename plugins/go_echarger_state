@@ -1,9 +1,6 @@
 #!/bin/bash
 # -*- bash -*-
 
-#set -x
-#set -u
-
 : << =cut
 
 =head1 NAME
@@ -36,10 +33,13 @@ GPLv2
 
 =cut
 
+#set -x
+#set -u
+
 host=${host:-go-echarger}
 
 get_status() {
-	curl -s http://${host}/mqtt
+	echo "${status}"
 }
 
 get_info() {
@@ -99,6 +99,10 @@ EOF
 		exit 0
 		;;
 esac 
+
+if [ -z "${status}" ]; then
+	status=$(curl -s http://${host}/mqtt)
+fi
 
 for state in car err ast alw adi wst wen lse ust nmo loe mce mcc; do
 	echo "${state}.value $(get_info ${state})"

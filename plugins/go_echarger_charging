@@ -1,9 +1,6 @@
 #!/bin/bash
 # -*- bash -*-
 
-#set -x
-#set -u
-
 : << =cut
 
 =head1 NAME
@@ -42,11 +39,14 @@ GPLv2
 
 =cut
 
+#set -x
+#set -u
+
 host=${host:-go-echarger}
 capacity=${capacity:-unset}
 
 get_status() {
-	curl -s http://${host}/mqtt
+	echo "${status}"
 }
 
 current_format() {
@@ -98,6 +98,10 @@ EOF
 		exit 0
 		;;
 esac 
+
+if [ -z "${status}" ]; then
+	status=$(curl -s http://${host}/mqtt)
+fi
 
 echo "current_charge.value $(get_current_charge)"
 echo "charge_limit.value $(get_charge_limit)"
