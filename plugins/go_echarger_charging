@@ -14,13 +14,13 @@ go_echarger_energy - Plugin to monitor charging progress
 
 You just need to set the host like this:
 
- [go-echarger-*]
+ [go_echarger_*]
  env.host go-echarger.home.well-adjusted.de
 
 You can also optionally set your EV's battery capacity in kWh to have it
 displayed as a constant in the graph:
 
- [go-echarger-*]
+ [go_echarger_*]
  env.capacity 28
 
 =head1 AUTHORS

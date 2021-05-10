@@ -14,7 +14,7 @@ go_echarger_current - Plugin to monitor line efficiency
 
 You just need to set the host like this:
 
- [go-echarger-*]
+ [go_echarger_*]
  env.host go-echarger.home.well-adjusted.de
 
 =head1 AUTHORS
