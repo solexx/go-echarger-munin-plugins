@@ -34,7 +34,7 @@ Unless your go-eCharger can be reached with the hostname
 `/etc/munin/plugin-conf.d/` with the proper hostname or IP address:
 
 ```
-[go-echarger-*]
+[go_echarger_*]
 env.host go-echarger.home.well-adjusted.de
 ```
 
@@ -42,7 +42,7 @@ You can also optionally set your EV's battery capacity in kWh to have it
 displayed as a constant in the charging graph:
 
 ```
-[go-echarger-*]
+[go_echarger_*]
 env.capacity 28
 ```
 
