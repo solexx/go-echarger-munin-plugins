@@ -89,6 +89,10 @@ EOF
 		# We use an empty, invisible base here to make stacking easy
 		echo "base.label void"
 		echo "base.graph no"
+
+		if [ -z "${status}" ]; then
+			status=$(curl -s http://${host}/mqtt)
+		fi
 		for t in ${tokens}; do
 			echo "token_${t}.label $(get_label_for_token $t)"
 			echo "token_${t}.draw AREASTACK"
