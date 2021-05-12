@@ -43,20 +43,28 @@ get_status() {
 }
 
 power_format() {
-	printf "%.1f" $(echo "$1 / 10" | bc -l)
+	if [ -n "$1" ]; then
+		printf "%.1f" $(echo "$1 / 10" | bc -l)
+	else
+		echo "U"
+	fi
 }
 
 total_power_format() {
-	printf "%.1f" $(echo "$1 / 100" | bc -l)
+	if [ -n "$1" ]; then
+		printf "%.1f" $(echo "$1 / 100" | bc -l)
+	else
+		echo "U"
+	fi
 }
 
 get_line_power() {
 	# $1 must be 1, 2, 3
-	line=$1
+	local line=$1
 	if [ "${line}" -lt 1 ] || [ "${line}" -gt 4 ]; then
 		exit
 	fi
-	idx=$(echo "$line + 6" | bc)
+	local idx=$(echo "$line + 6" | bc)
 	power_format $(get_status | jq ".nrg[${idx}]")
 }
 

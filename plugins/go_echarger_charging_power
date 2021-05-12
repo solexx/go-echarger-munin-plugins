@@ -43,11 +43,15 @@ get_status() {
 }
 
 current_format() {
-	printf "%.0f" "$1"
+	if [ -n "$1" ]; then
+		printf "%.0f" "$1"
+	else
+		echo "U"
+	fi
 }
 
 get_current_charge() {
-	dws=$(get_status | jq ".dws | tonumber")
+	local dws=$(get_status | jq ".dws | tonumber")
 	current_format $(( ${dws} * 10 ))
 }
 

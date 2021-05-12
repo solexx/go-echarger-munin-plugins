@@ -50,16 +50,20 @@ get_status() {
 }
 
 current_format() {
-	printf "%.1f" "$1"
+	if [ -n "$1" ]; then
+		printf "%.1f" "$1"
+	else
+		echo "U"
+	fi
 }
 
 get_current_charge() {
-	dws=$(get_status | jq ".dws | tonumber")
+	local dws=$(get_status | jq ".dws | tonumber")
 	current_format $(echo "${dws} / 3600 / 100" | bc -l)
 }
 
 get_charge_limit() {
-	dwo=$(get_status | jq ".dwo | tonumber")
+	local dwo=$(get_status | jq ".dwo | tonumber")
 	current_format $(echo "${dwo} / 10"  | bc -l)
 }
 

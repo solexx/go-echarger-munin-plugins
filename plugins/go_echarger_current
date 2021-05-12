@@ -43,34 +43,43 @@ get_status() {
 	echo "${status}"
 }
 
-get_cable_current() {
-	get_status | jq ".cbl | tonumber"
+current_format() {
+	if [ -n "$1" ]; then
+		printf "%.1f" $(echo "$1 / 10" | bc -l)
+	else
+		echo "U"
+	fi
 }
 
-current_format() {
-	printf "%.1f" $(echo "$1 / 10" | bc -l)
+get_cable_current() {
+	current_format $(get_status | jq ".cbl | tonumber")
 }
 
 get_line_current() {
 	# $1 must be 1, 2, 3
-	line=$1
+	local line=$1
 	if [ "${line}" -lt 1 ] || [ "${line}" -gt 4 ]; then
 		exit
 	fi
-	idx=$(echo "$line + 3" | bc)
+	local idx=$(echo "$line + 3" | bc)
 	current_format $(get_status | jq ".nrg[${idx}]")
 }
 
 get_current_level() {
-	get_status | jq ".amp | tonumber"
+	current_format $(get_status | jq ".amp | tonumber")
 }
 
 get_max_configured_current() {
-	get_status | jq ".ama | tonumber"
+	current_format $(get_status | jq ".ama | tonumber")
 }
 
 get_adapter_status() {
-	get_status | jq ".adi | tonumber"
+	local adi=$(get_status | jq ".adi | tonumber")
+	if [ -n "$adi" ]; then
+		echo "$adi"
+	else
+		echo "U"
+	fi
 }
 
 case $1 in
@@ -117,7 +126,7 @@ echo "line2.value $(get_line_current 2)"
 echo "line3.value $(get_line_current 3)"
 echo "neutral.value $(get_line_current 4)"
 
-if [ "$(get_adapter_status)" -eq 1 ]; then
+if [ "$(get_adapter_status)" -gt 1 ]; then
 	echo "adapter.value 16"
 else
 	echo "adapter.value 0"

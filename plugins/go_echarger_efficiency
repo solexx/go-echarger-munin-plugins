@@ -44,12 +44,17 @@ get_status() {
 
 get_line_efficiency() {
 	# $1 must be 1, 2, 3, 4 (4=neutral)
-	line=$1
+	local line=$1
 	if [ "${line}" -lt 1 ] || [ "${line}" -gt 4 ]; then
 		exit
 	fi
-	idx=$(echo "$line + 11" | bc)
-	get_status | jq ".nrg[${idx}] | tonumber"
+	local idx=$(echo "$line + 11" | bc)
+	local nrg=$(get_status | jq ".nrg[${idx}] | tonumber")
+	if [ -n "$nrg" ]; then
+		echo "$nrg"
+	else
+		echo "U"
+	fi
 }
 
 case $1 in

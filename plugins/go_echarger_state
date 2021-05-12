@@ -43,7 +43,11 @@ get_status() {
 }
 
 get_info() {
-	get_status | jq ".${1} | tonumber"
+	if [ -n "$1" ]; then
+		get_status | jq ".${1} | tonumber"
+	else
+		echo "U"
+	fi
 }
 
 
