@@ -51,8 +51,16 @@ current_format() {
 	fi
 }
 
+limit_format() {
+	if [ -n "$1" ]; then
+		printf "%.1f" "$1"
+	else
+		echo "U"
+	fi
+}
+
 get_cable_current() {
-	current_format $(get_status | jq ".cbl | tonumber")
+	limit_format $(get_status | jq ".cbl | tonumber")
 }
 
 get_line_current() {
@@ -66,11 +74,11 @@ get_line_current() {
 }
 
 get_current_level() {
-	current_format $(get_status | jq ".amp | tonumber")
+	limit_format $(get_status | jq ".amp | tonumber")
 }
 
 get_max_configured_current() {
-	current_format $(get_status | jq ".ama | tonumber")
+	limit_format $(get_status | jq ".ama | tonumber")
 }
 
 get_adapter_status() {
