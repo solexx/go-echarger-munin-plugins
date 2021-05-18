@@ -66,7 +66,7 @@ get_cable_current() {
 get_line_current() {
 	# $1 must be 1, 2, 3
 	local line=$1
-	if [ "${line}" -lt 1 ] || [ "${line}" -gt 4 ]; then
+	if [ "${line}" -lt 1 ] || [ "${line}" -gt 3 ]; then
 		exit
 	fi
 	local idx=$(echo "$line + 3" | bc)
@@ -105,7 +105,6 @@ EOF
 		echo "line1.label Line 1"
 		echo "line2.label Line 2"
 		echo "line3.label Line 3"
-		echo "neutral.label Neutral"
 		echo "adapter.label Adapter Limit"
 		echo "cable.label Cable Limit"
 		echo "level.label Selected Level"
@@ -132,7 +131,6 @@ fi
 echo "line1.value $(get_line_current 1)"
 echo "line2.value $(get_line_current 2)"
 echo "line3.value $(get_line_current 3)"
-echo "neutral.value $(get_line_current 4)"
 
 if [ "$(get_adapter_status)" -gt 1 ]; then
 	echo "adapter.value 16"
