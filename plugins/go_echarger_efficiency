@@ -5,7 +5,7 @@
 
 =head1 NAME
 
-go_echarger_current - Plugin to monitor line efficiency
+go_echarger_efficiency - Plugin to monitor line efficiency
 
 =head1 CONFIGURATION
 
