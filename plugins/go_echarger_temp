@@ -1,0 +1,99 @@
+#!/bin/bash
+# -*- bash -*-
+
+: << =cut
+
+=head1 NAME
+
+go_echarger_temp - Plugin to monitor go-eCharger temperature
+
+=head1 CONFIGURATION
+
+You just need to set the host like this:
+
+ [go_echarger_*]
+ env.host go-echarger.home.well-adjusted.de
+
+=head1 AUTHORS
+
+=over
+
+=item 2021.05.01 Initial version by Jochen Spieker <js@wim.re>
+
+=back
+
+=head1 LICENSE
+
+GPLv2
+
+=head1 MAGIC MARKERS
+
+ #%# family=contrib
+ #%# capabilities=autoconf
+
+=cut
+
+#set -x
+#set -u
+
+host=${host:-go-echarger}
+
+get_status() {
+	echo "${status}"
+}
+
+get_temp_n() {
+	# $1 must be 0, 1, 2, 3
+	local idx=$1
+	if [ "${idx}" -lt 0 ] || [ "${idx}" -gt 3 ]; then
+		exit
+	fi
+	local temp=$(get_status | jq ".tma[${idx}] | tonumber")
+	if [ -n "$temp" ]; then
+		echo "$temp"
+	else
+		echo "U"
+	fi
+}
+
+case $1 in
+	config)
+        cat <<EOF
+graph_title go-eCharger Temperature
+graph_vlabel °C
+graph_scale no
+graph_info go-eCharger Temperature
+graph_category go_eCharger
+graph_printf %0.1lf
+graph_data_size custom 7d, 30m for 30d, 2h for 365d, 1d for 3650d
+EOF
+
+		echo "temp0.label Temp 0"
+		echo "temp1.label Temp 1"
+		echo "temp2.label Temp 2"
+		echo "temp3.label Temp 3"
+
+        exit 0
+		;;
+	autoconf)
+		if ! jq --version > /dev/null; then
+			echo "no ('jq' not found. Is it installed and in PATH?)"
+		elif ! echo "" | nc -q1 "$host" "80" > /dev/null 2>&1 ; then
+			echo "no (Connection to ${host}:80 failed.)"
+		else
+			echo "yes"
+		fi
+		exit 0
+		;;
+esac 
+
+if [ -z "${status}" ]; then
+	status=$(curl -s http://${host}/mqtt)
+fi
+
+echo "temp0.value $(get_temp_n 0)"
+echo "temp1.value $(get_temp_n 1)"
+echo "temp2.value $(get_temp_n 2)"
+echo "temp3.value $(get_temp_n 3)"
+
+exit 0
